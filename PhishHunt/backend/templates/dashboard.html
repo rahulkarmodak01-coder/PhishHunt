@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PhishHunt - Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .dashboard-page {
+            width: 94%;
+            max-width: 1400px;
+            margin: 35px auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .dashboard-header p {
+            margin-top: 8px;
+            opacity: 0.7;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dashboard-btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            background: #2b8cff;
+            font-weight: 600;
+        }
+
+        .dashboard-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* STATISTICS */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            padding: 22px;
+            border-radius: 16px;
+
+            background: rgba(255, 255, 255, 0.05);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 13px;
+            opacity: 0.65;
+        }
+
+        .stat-number {
+            margin-top: 10px;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .stat-small {
+            margin-top: 5px;
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .legitimate-text {
+            color: #65e890;
+        }
+
+        .phishing-text {
+            color: #ff7777;
+        }
+
+        .suspicious-text {
+            color: #ffc15a;
+        }
+
+        /* CHART */
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, 0.05);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .panel h2 {
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .chart-container {
+            height: 260px;
+
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+
+            gap: 35px;
+
+            padding: 20px 10px;
+        }
+
+        .bar-wrapper {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar {
+            width: 65px;
+            min-height: 4px;
+            border-radius: 8px 8px 2px 2px;
+
+            transition: height 0.5s ease;
+        }
+
+        .bar-legitimate {
+            background: #65e890;
+        }
+
+        .bar-phishing {
+            background: #ff7777;
+        }
+
+        .bar-suspicious {
+            background: #ffc15a;
+        }
+
+        .bar-value {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        /* RISK */
+
+        .risk-display {
+            text-align: center;
+            padding: 25px;
+        }
+
+        .risk-number {
+            font-size: 55px;
+            font-weight: 800;
+        }
+
+        .risk-label {
+            opacity: 0.65;
+            margin-top: 5px;
+        }
+
+        .risk-progress {
+            width: 100%;
+            height: 12px;
+
+            margin-top: 25px;
+
+            background: rgba(255, 255, 255, 0.08);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .risk-progress-fill {
+            height: 100%;
+            width: 0%;
+
+            background: #ffc15a;
+
+            border-radius: 20px;
+
+            transition: width 0.6s ease;
+        }
+
+        /* RECENT SCANS */
+
+        .recent-panel {
+            padding: 25px;
+
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, 0.05);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            overflow-x: auto;
+        }
+
+        .recent-panel h2 {
+            margin-top: 0;
+        }
+
+        .recent-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .recent-table th {
+            text-align: left;
+            padding: 13px;
+
+            font-size: 12px;
+
+            opacity: 0.65;
+
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .recent-table td {
+            padding: 13px;
+
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .url-cell {
+            max-width: 350px;
+            word-break: break-all;
+        }
+
+        .badge {
+            display: inline-block;
+
+            padding: 6px 10px;
+
+            border-radius: 20px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+        .badge-legitimate {
+            background: rgba(70, 220, 120, 0.15);
+            color: #65e890;
+        }
+
+        .badge-phishing {
+            background: rgba(255, 80, 80, 0.15);
+            color: #ff7777;
+        }
+
+        .badge-suspicious {
+            background: rgba(255, 180, 50, 0.15);
+            color: #ffc15a;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            opacity: 0.65;
+        }
+
+        .loading-message {
+            text-align: center;
+            padding: 50px;
+            opacity: 0.65;
+        }
+
+        @media (max-width: 1100px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+        }
+
+        @media (max-width: 800px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header h1 {
+                font-size: 26px;
+            }
+
+            .bar {
+                width: 45px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<main class="dashboard-page">
+
+    <!-- HEADER -->
+
+    <header class="dashboard-header">
+
+        <div>
+
+            <h1>🛡️ PhishHunt Dashboard</h1>
+
+            <p>
+                Security analysis overview and scan statistics
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-actions">
+
+            <a
+                href="/"
+                class="dashboard-btn">
+                🔎 Analyze URL
+            </a>
+
+            <a
+                href="/history"
+                class="dashboard-btn">
+                📋 History
+            </a>
+
+            <button
+                class="dashboard-btn"
+                onclick="loadDashboard()">
+                ↻ Refresh
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <h3>TOTAL SCANS</h3>
+
+            <div
+                id="totalScans"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-small">
+                URLs analyzed
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>LEGITIMATE</h3>
+
+            <div
+                id="legitimateCount"
+                class="stat-number legitimate-text">
+                0
+            </div>
+
+            <div
+                id="legitimatePercent"
+                class="stat-small">
+                0%
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>PHISHING</h3>
+
+            <div
+                id="phishingCount"
+                class="stat-number phishing-text">
+                0
+            </div>
+
+            <div
+                id="phishingPercent"
+                class="stat-small">
+                0%
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>SUSPICIOUS</h3>
+
+            <div
+                id="suspiciousCount"
+                class="stat-number suspicious-text">
+                0
+            </div>
+
+            <div
+                id="suspiciousPercent"
+                class="stat-small">
+                0%
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>AVG RISK SCORE</h3>
+
+            <div
+                id="averageRisk"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-small">
+                out of 100
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ANALYTICS -->
+
+    <section class="analytics-grid">
+
+
+        <!-- RESULT DISTRIBUTION -->
+
+        <div class="panel">
+
+            <h2>📊 Result Distribution</h2>
+
+            <div class="chart-container">
+
+                <div class="bar-wrapper">
+
+                    <div
+                        id="legitimateValue"
+                        class="bar-value">
+                        0
+                    </div>
+
+                    <div
+                        id="legitimateBar"
+                        class="bar bar-legitimate">
+                    </div>
+
+                    <div class="bar-label">
+                        Legitimate
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div
+                        id="phishingValue"
+                        class="bar-value">
+                        0
+                    </div>
+
+                    <div
+                        id="phishingBar"
+                        class="bar bar-phishing">
+                    </div>
+
+                    <div class="bar-label">
+                        Phishing
+                    </div>
+
+                </div>
+
+
+                <div class="bar-wrapper">
+
+                    <div
+                        id="suspiciousValue"
+                        class="bar-value">
+                        0
+                    </div>
+
+                    <div
+                        id="suspiciousBar"
+                        class="bar bar-suspicious">
+                    </div>
+
+                    <div class="bar-label">
+                        Suspicious
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RISK ANALYSIS -->
+
+        <div class="panel">
+
+            <h2>⚠️ Risk Analysis</h2>
+
+            <div class="risk-display">
+
+                <div
+                    id="riskNumber"
+                    class="risk-number">
+                    0
+                </div>
+
+                <div class="risk-label">
+                    Average Risk Score
+                </div>
+
+
+                <div class="risk-progress">
+
+                    <div
+                        id="riskProgress"
+                        class="risk-progress-fill">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RECENT SCANS -->
+
+    <section class="recent-panel">
+
+        <h2>🕒 Recent Scans</h2>
+
+        <div id="recentContent">
+
+            <div class="loading-message">
+                Loading dashboard...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+async function loadDashboard() {
+
+    try {
+
+        const response =
+            await fetch("/api/history");
+
+
+        const data =
+            await response.json();
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Unable to load scan history"
+            );
+
+        }
+
+
+        const history =
+            data.history || [];
+
+
+        updateDashboard(history);
+
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard error:",
+            error
+        );
+
+
+        document.getElementById(
+            "recentContent"
+        ).innerHTML = `
+
+            <div class="empty-message">
+
+                Unable to load dashboard data.
+
+                <br><br>
+
+                ${escapeHTML(error.message)}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+function updateDashboard(history) {
+
+    const total =
+        history.length;
+
+
+    const legitimate =
+        history.filter(
+            item =>
+                item.final_result === "LEGITIMATE"
+        ).length;
+
+
+    const phishing =
+        history.filter(
+            item =>
+                item.final_result === "PHISHING"
+        ).length;
+
+
+    const suspicious =
+        history.filter(
+            item =>
+                item.final_result === "SUSPICIOUS"
+        ).length;
+
+
+    let riskTotal = 0;
+
+
+    history.forEach(item => {
+
+        riskTotal +=
+            Number(item.risk_score || 0);
+
+    });
+
+
+    const averageRisk =
+        total > 0
+            ? riskTotal / total
+            : 0;
+
+
+    const legitimatePercent =
+        total > 0
+            ? (legitimate / total) * 100
+            : 0;
+
+
+    const phishingPercent =
+        total > 0
+            ? (phishing / total) * 100
+            : 0;
+
+
+    const suspiciousPercent =
+        total > 0
+            ? (suspicious / total) * 100
+            : 0;
+
+
+    document.getElementById(
+        "totalScans"
+    ).textContent = total;
+
+
+    document.getElementById(
+        "legitimateCount"
+    ).textContent = legitimate;
+
+
+    document.getElementById(
+        "phishingCount"
+    ).textContent = phishing;
+
+
+    document.getElementById(
+        "suspiciousCount"
+    ).textContent = suspicious;
+
+
+    document.getElementById(
+        "averageRisk"
+    ).textContent =
+        averageRisk.toFixed(1);
+
+
+    document.getElementById(
+        "legitimatePercent"
+    ).textContent =
+        legitimatePercent.toFixed(1) + "%";
+
+
+    document.getElementById(
+        "phishingPercent"
+    ).textContent =
+        phishingPercent.toFixed(1) + "%";
+
+
+    document.getElementById(
+        "suspiciousPercent"
+    ).textContent =
+        suspiciousPercent.toFixed(1) + "%";
+
+
+    updateBars(
+        legitimate,
+        phishing,
+        suspicious
+    );
+
+
+    updateRisk(
+        averageRisk
+    );
+
+
+    updateRecentScans(
+        history
+    );
+
+}
+
+
+function updateBars(
+    legitimate,
+    phishing,
+    suspicious
+) {
+
+    const maxValue =
+        Math.max(
+            legitimate,
+            phishing,
+            suspicious,
+            1
+        );
+
+
+    const maxHeight = 180;
+
+
+    document.getElementById(
+        "legitimateBar"
+    ).style.height =
+        (legitimate / maxValue * maxHeight) + "px";
+
+
+    document.getElementById(
+        "phishingBar"
+    ).style.height =
+        (phishing / maxValue * maxHeight) + "px";
+
+
+    document.getElementById(
+        "suspiciousBar"
+    ).style.height =
+        (suspicious / maxValue * maxHeight) + "px";
+
+
+    document.getElementById(
+        "legitimateValue"
+    ).textContent =
+        legitimate;
+
+
+    document.getElementById(
+        "phishingValue"
+    ).textContent =
+        phishing;
+
+
+    document.getElementById(
+        "suspiciousValue"
+    ).textContent =
+        suspicious;
+
+}
+
+
+function updateRisk(
+    averageRisk
+) {
+
+    const risk =
+        Math.min(
+            Math.max(averageRisk, 0),
+            100
+        );
+
+
+    document.getElementById(
+        "riskNumber"
+    ).textContent =
+        risk.toFixed(1);
+
+
+    document.getElementById(
+        "riskProgress"
+    ).style.width =
+        risk + "%";
+
+}
+
+
+function updateRecentScans(
+    history
+) {
+
+    const container =
+        document.getElementById(
+            "recentContent"
+        );
+
+
+    if (history.length === 0) {
+
+        container.innerHTML = `
+
+            <div class="empty-message">
+
+                <h3>No scans yet</h3>
+
+                <p>
+                    Analyze a URL to start building
+                    your security statistics.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const recent =
+        history.slice(0, 10);
+
+
+    let html = `
+
+        <table class="recent-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>URL</th>
+
+                    <th>Final Result</th>
+
+                    <th>Risk Score</th>
+
+                    <th>ML Prediction</th>
+
+                    <th>Time</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+
+    recent.forEach(item => {
+
+        const resultClass =
+            getBadgeClass(
+                item.final_result
+            );
+
+
+        html += `
+
+            <tr>
+
+                <td class="url-cell">
+                    ${escapeHTML(item.url)}
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="badge ${resultClass}">
+                        ${escapeHTML(
+                            item.final_result
+                        )}
+                    </span>
+
+                </td>
+
+
+                <td>
+                    ${item.risk_score ?? 0}/100
+                </td>
+
+
+                <td>
+                    ${escapeHTML(
+                        item.ml_prediction || "-"
+                    )}
+                </td>
+
+
+                <td>
+                    ${escapeHTML(
+                        item.timestamp || "-"
+                    )}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    container.innerHTML =
+        html;
+
+}
+
+
+function getBadgeClass(
+    result
+) {
+
+    if (!result) {
+        return "badge-suspicious";
+    }
+
+
+    const value =
+        result.toUpperCase();
+
+
+    if (value === "LEGITIMATE") {
+        return "badge-legitimate";
+    }
+
+
+    if (value === "PHISHING") {
+        return "badge-phishing";
+    }
+
+
+    return "badge-suspicious";
+
+}
+
+
+function escapeHTML(
+    value
+) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(value ?? "");
+
+    return div.innerHTML;
+
+}
+
+
+loadDashboard();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "PhishHunt - Phishing URL Detector",
+  "version": "1.0.0",
+  "description": "PhishHunt analyzes URLs using machine learning and cybersecurity rules to detect potential phishing threats.",
+
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "notifications"
+  ],
+
+  "host_permissions": [
+    "http://127.0.0.1:5000/*",
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_title": "PhishHunt",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

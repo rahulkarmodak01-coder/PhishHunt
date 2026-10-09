@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PhishHunt - Phishing URL Detector</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="background"></div>
+
+    <header>
+        <div class="logo">
+            <span class="logo-icon">🛡️</span>
+            <span>PhishHunt</span>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            System Online
+        </div>
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+
+            <div class="badge">
+                🔐 AI-Powered Phishing Detection
+            </div>
+
+            <h1>
+                Detect Phishing URLs<br>
+                <span>Before It's Too Late</span>
+            </h1>
+
+            <p>
+                Analyze suspicious URLs using Machine Learning
+                and Cybersecurity-based security rules.
+            </p>
+
+
+            <div class="scanner-card">
+
+                <div class="input-wrapper">
+
+                    <span class="url-icon">🔗</span>
+
+                    <input
+                        type="text"
+                        id="urlInput"
+                        placeholder="Enter a URL, e.g. https://example.com"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <button id="analyzeButton" onclick="analyzeURL()">
+                    <span>🔍</span>
+                    Analyze URL
+                </button>
+
+            </div>
+
+
+            <div class="warning">
+                ⚠️ PhishHunt analyzes the URL without visiting the website.
+            </div>
+
+        </section>
+
+
+        <!-- Loading -->
+
+        <section id="loading" class="loading hidden">
+
+            <div class="spinner"></div>
+
+            <p>
+                Analyzing URL...
+            </p>
+
+            <small>
+                Machine Learning + Security Rules
+            </small>
+
+        </section>
+
+
+        <!-- Error -->
+
+        <section id="errorBox" class="error-box hidden">
+
+            <div class="error-icon">
+                ⚠️
+            </div>
+
+            <div>
+                <strong>Analysis Error</strong>
+                <p id="errorMessage"></p>
+            </div>
+
+        </section>
+
+
+        <!-- Results -->
+
+        <section id="resultSection" class="results hidden">
+
+            <div class="result-header">
+
+                <div>
+                    <span class="section-label">
+                        ANALYSIS RESULT
+                    </span>
+
+                    <h2 id="finalResult">
+                        LEGITIMATE
+                    </h2>
+                </div>
+
+                <div id="resultIcon" class="result-icon">
+                    ✓
+                </div>
+
+            </div>
+
+
+            <div class="analyzed-url">
+
+                <span>Analyzed URL</span>
+
+                <div id="analyzedURL">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="result-grid">
+
+
+                <!-- ML -->
+
+                <div class="result-card">
+
+                    <div class="card-icon">
+                        🤖
+                    </div>
+
+                    <div class="card-title">
+                        ML Prediction
+                    </div>
+
+                    <div id="mlPrediction" class="card-value">
+                        -
+                    </div>
+
+                    <div class="card-subtitle">
+                        Machine Learning Model
+                    </div>
+
+                </div>
+
+
+                <!-- Confidence -->
+
+                <div class="result-card">
+
+                    <div class="card-icon">
+                        📊
+                    </div>
+
+                    <div class="card-title">
+                        ML Confidence
+                    </div>
+
+                    <div id="mlConfidence" class="card-value">
+                        -
+                    </div>
+
+                    <div class="confidence-bar">
+
+                        <div
+                            id="confidenceFill"
+                            class="confidence-fill">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Risk -->
+
+                <div class="result-card">
+
+                    <div class="card-icon">
+                        ⚠️
+                    </div>
+
+                    <div class="card-title">
+                        Risk Score
+                    </div>
+
+                    <div id="riskScore" class="card-value">
+                        -
+                    </div>
+
+                    <div class="risk-bar">
+
+                        <div
+                            id="riskFill"
+                            class="risk-fill">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Security -->
+
+                <div class="result-card">
+
+                    <div class="card-icon">
+                        🛡️
+                    </div>
+
+                    <div class="card-title">
+                        Security Decision
+                    </div>
+
+                    <div id="securityDecision" class="card-value">
+                        -
+                    </div>
+
+                    <div class="card-subtitle">
+                        Rule Engine
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Security Indicators -->
+
+            <div class="indicators-card">
+
+                <h3>
+                    🔎 Security Indicators
+                </h3>
+
+                <div id="indicators">
+                    No indicators detected.
+                </div>
+
+            </div>
+
+
+            <button
+                class="new-analysis"
+                onclick="resetAnalysis()">
+
+                🔄 Analyze Another URL
+
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <p>
+            PhishHunt © 2026
+        </p>
+
+        <p>
+            Cybersecurity • Machine Learning • Web Development
+        </p>
+
+    </footer>
+
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
